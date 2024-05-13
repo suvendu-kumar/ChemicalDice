@@ -293,8 +293,16 @@ plot_model_boxplot(top_models, save_dir ='outputs')
 ### Scaffold splitting
 
 The function
-`` evaluate_fusion_models_scaffold_split` can do scaffold splitting for evaluation of fusion methods, it takes Optional  arguments ``methods`list argument to evaluate the fusion model and`n_components`the number of components use for the fusion and the splitting type of scaffold to use for splitting of data-.  .. code:: python     # evaluate all models    fusiondata.evaluate_fusion_models_scaffold_split( methods= ["AER", "pca"],                                               n_components = 10                                              AER_dim = 256,                                              regression = True,                                              split_type = "random")  Metrics of all the models can be accessed by`Accuracy_metrics`in`fusionData\`\`
-object.
+`` evaluate_fusion_models_scaffold_split` can do scaffold splitting for evaluation of fusion methods, it takes Optional  arguments ``methods`list argument to evaluate the fusion model and`n_components`the number of components use for the fusion and the splitting type of scaffold to use for splitting of data-.  
+``` {.python}
+# evaluate all models
+fusiondata.evaluate_fusion_models_scaffold_split( methods= ["AER", "pca"],
+                                          n_components = 10
+                                          AER_dim = 256,
+                                          regression = True,
+                                          split_type = "random")
+```
+
 
 ``` {.python}
 ## Accuracy metrics all models
