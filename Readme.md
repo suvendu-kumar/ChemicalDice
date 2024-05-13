@@ -108,12 +108,12 @@ during initialization of `fusionData`.
 
 ``` {.python}
 data_paths = {
-    "tabular1":"data/Chemberta_embeddings.csv",
-    "tabular2":"data/graph_embeddings.csv",
-    "tabular3":"data/mopac_descriptors.csv",
-    "tabular4":"data/mordred_descriptors.csv",
-    "tabular5":"data/signaturizer_descriptors.csv",
-    "tabular6": "data/ImageMol_embeddings.csv"
+    "tabular1":"data/Chemberta.csv",
+    "tabular2":"data/Grover.csv",
+    "tabular3":"data/mopac.csv",
+    "tabular4":"data/mordred.csv",
+    "tabular5":"data/Signaturizer.csv",
+    "tabular6": "data/ImageMol.csv"
 }
 ```
 
