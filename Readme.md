@@ -32,7 +32,8 @@ Follow the prompts after above commands to install conda. Make a
 separate environment named chemdice using the conda create
 
 ``` {.bash}
-conda create -n chemdice python=3.10
+conda create -n chemicaldice python=3.10
+conda activate chemicaldice
 ```
 
 Installation
