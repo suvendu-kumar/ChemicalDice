@@ -1,5 +1,5 @@
 # ChemicalDice
-![ChemicalDice Logo](docs/source/_static/images/logo/chemicaldice_logo.png)
+![ChemicalDice Logo](docs/source/_static/images/logo/Chemicaldice_logo.png)
 
 
 ChemicalDice presents an innovative paradigm shift in cheminformatics
