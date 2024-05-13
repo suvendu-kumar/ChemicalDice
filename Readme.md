@@ -263,7 +263,7 @@ plot_model_metrics(top_models, save_dir = "output_plots")
 The function `evaluate_fusion_model_nfold` can do n fold cross
 validation for evaluation of fusion methods, it takes Optional arguments
 `methods` list argument to evaluate the fusion model and `n_components`
-the number of components use for the fusion and the number of folds to
+the number of components to use for the fusion and the number of folds to
 use for cross-validation.
 
 ``` {.python}
@@ -293,7 +293,7 @@ plot_model_boxplot(top_models, save_dir ='outputs')
 ### Scaffold splitting
 
 The function
-`` evaluate_fusion_models_scaffold_split` can do scaffold splitting for evaluation of fusion methods, it takes Optional  arguments ``methods`list argument to evaluate the fusion model and`n_components`the number of components use for the fusion and the splitting type of scaffold to use for splitting of data-.  
+``evaluate_fusion_models_scaffold_split`` can do scaffold splitting for evaluation of fusion methods, it takes Optional  arguments ``methods`` list argument to evaluate the fusion model and ``n_components`` the number of components to use for the fusion and the splitting type of scaffold to use for splitting of data-.  
 ``` {.python}
 # evaluate all models
 fusiondata.evaluate_fusion_models_scaffold_split( methods= ["AER", "pca"],
