@@ -1,0 +1,3 @@
+include ChemicalDice/*.py
+recursive-include docs *
+recursive-include models *
