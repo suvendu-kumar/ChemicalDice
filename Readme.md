@@ -57,22 +57,14 @@ This command installs Chemicaldice along with the required dependencies.
 Make sure to have the appropriate versions of these packages compatible
 with ChemicalDice.
 
-Import
-------
 
-``` {.python}
-from ChemicalDice import smiles_preprocess, bioactivity, chemberta, Grover, ImageMol, chemical, quantum
-from ChemicalDice.fusionData import fusionData
-from ChemicalDice.plot_data import plot_model_boxplot
-from ChemicalDice.plot_data import plot_model_metrics
-from ChemicalDice.plot_data import plot_models_barplot
-```
 
 Calculation of descriptors
 --------------------------
 
 ``` {.python}
 # create a directory for storing descriptors file 
+from ChemicalDice import smiles_preprocess, bioactivity, chemberta, Grover, ImageMol, chemical, quantum
 import os
 os.mkdir("data")
 
@@ -107,6 +99,8 @@ and labels) you can provide`id_column` and `label_column` argument
 during initialization of `fusionData`.
 
 ``` {.python}
+from ChemicalDice.fusionData import fusionData
+
 data_paths = {
     "tabular1":"data/Chemberta.csv",
     "tabular2":"data/Grover.csv",
@@ -255,6 +249,7 @@ top_models = fuseiondata.Accuracy_metrics.iloc[0:10,:]
 Plotting the `Accuracy_metrics` can done by the following function.
 
 ``` {.python}
+from ChemicalDice.plot_data import plot_model_metrics
 # give top_model dataframe & output directory name for saving plots
 plot_model_metrics(top_models, save_dir = "output_plots")
 ```
@@ -287,6 +282,7 @@ top_models = fuseiondata.Accuracy_metrics.iloc[0:100,:]
 Plotting of the `Accuracy_metrics` can done by the following function.
 
 ``` {.python}
+from ChemicalDice.plot_data import plot_model_boxplot
 # give top model dataframe & output directory name for saving box plots
 plot_model_boxplot(top_models, save_dir ='outputs')
 ```
@@ -314,6 +310,7 @@ Plotting of the training, validation and testing can done by the
 following function.
 
 ``` {.python}
+from ChemicalDice.plot_data import plot_models_barplot
 # give scaffold_split_result & output directory name for saving box plots
 matrics = fusiondata.scaffold_split_result
 plot_models_barplot(matrics,save_dir = "output")
