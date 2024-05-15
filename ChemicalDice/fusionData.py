@@ -101,7 +101,7 @@ import os
 import matplotlib.pyplot as plt
 from scipy import stats
 import pandas as pd
-from ChemicalDice.getEmbeddings import AutoencoderReconstructor , AutoencoderReconstructor2
+from ChemicalDice.getEmbeddings import AutoencoderReconstructor_training , AutoencoderReconstructor_testing
 import time
 from ChemicalDice.splitting import random_scaffold_split_train_val_test
 
@@ -257,7 +257,7 @@ class fusionData:
     def remove_empty_features(self,threshold=100):
         
         """
-        Remove columns with more than a certain percentage of missing values from dataframes.
+        Remove columns with more than a threshold percentage of missing values from dataframes.
 
         :param threshold: The percentage threshold of missing values to drop a column. It should be between 0 and 100.
         :type threshold: float
@@ -265,17 +265,11 @@ class fusionData:
         """
         dataframes = self.dataframes
         for name, df in dataframes.items():
-            if df.shape[1] == 1824:
-                common_columns = "Mor05v,Mor22m,Mor26p,GRAVH,AATSC8i,MAXssS,MAXtCH,MAXssBe,Mor21m,MAXsAsH2,MAXssSnH2,MAXsssSiH,MAXsI,Mor30m,Mor23p,Mor08se,MINssssSn,MINddsN,MINssBe,Mor04,MAXdCH2,Mor03v,AATS8i,Vabc,MAXssssN,MAXsssPbH,MINsAsH2,AATS8v,Mor30p,MDEC-34,Mor20se,MINddC,AATS8dv,Mor06p,Mor05se,Mor02se,Mor16v,MAXdsssP,MINsGeH3,Mor01,AATSC8m,MINsssssAs,Mor22p,MINsssPbH,AATSC8p,MINdS,SM1_Dt,AATS8p,MDEC-44,MINdssC,Mor31,Mor14m,MAXsCl,MINsBr,Mor29m,MINdssSe,Mor03,MINssssN,AATSC8s,MDEC-11,MINsssB,MAXsLi,MAXsSeH,Mor03se,Mor08,Mor15p,Mor11v,Mor11se,Mor23m,MINaaSe,GATS8d,Mor29v,MAXddC,MAXaasN,VR3_Dt,Mor01v,SpDiam_Dt,Mor12se,MINsSeH,Mor20,MAXaaO,Mor12p,MAXdsN,SpAD_Dt,Mor17se,MDEC-24,Mor28v,MINssPH,MAXsPbH3,MAXssAsH,MDEO-11,Mor27,MAXsssCH,MATS8c,Mor09se,LogEE_Dt,Mor25p,MINsssGeH,GhoseFilter,MAXaaN,Mor02v,MINaaO,MINsssSiH,MAXsssssAs,Mor17m,Mor01m,Mor20v,MAXsSnH3,MAXdSe,Mor13se,Mor21se,Mor07p,MINsLi,GATS8dv,Mor11,MINaaCH,MAXsSiH3,MATS8Z,Mor29se,Mor24p,MINtsC,MINssNH2,ABCGG,GATS8c,MAXtsC,AATS8s,MATS8d,MAXaaCH,Mor01p,MAXsNH3,Mor25v,Mor02,GATS8v,MINsssN,MAXdNH,MINddssS,MINtCH,MAXsssB,Mor01se,GATS8p,MAXaaS,MINssS,ABC,AATSC8d,MATS8p,MINsssP,Mor13,Mor16se,Mor09v,MINdsN,Mor20p,Mor13v,MINssssB,Mor30,Mor18p,Mor29,MINssAsH,Mor15se,Mor05p,GATS8i,Mor22,Mor32m,MATS8pe,Mor18v,Mor29p,VE2_Dt,Mor25m,Mor10,Mor10se,MDEO-12,GATS8are,MINssCH2,MAXdO,MDEN-13,Mor28m,Mor26v,MINssBH,MDEN-12,MINsI,MAXssBH,Mor24,Mor25se,MINsssssP,VR2_Dt,MINdNH,GATS8pe,MINsNH2,MINsPbH3,Mor23v,MINsOH,Mor26se,MATS8s,Mor18,Mor02m,MINsssCH,MINsPH2,Mor04m,Mor19p,Mor05,MAXsssAs,MDEN-11,AATS8are,GATS8m,MDEC-14,Mor15,Mor23se,AATSC8pe,MATS8se,MAXsssN,VR1_Dt,Mor16,MINsssSnH,Mor32se,MINssssPb,AATS8pe,Mor17p,MAXssssSi,MINssssGe,MINsSH,Mor28p,VE3_Dt,MAXsSH,Mor03m,Mor19v,Mor19,MAXsssNH,MAXsssGeH,MAXsGeH3,SpAbs_Dt,Mor15m,Mor09,GATS8s,Mor31p,AATS8m,Mor06,Mor07se,AATS8d,MAXddssS,Mor08p,Mor04v,Mor31v,MAXssPbH2,MAXssssPb,MDEC-13,Mor24m,Mor26,MINsssAs,Mor32v,MAXtN,MAXdS,MAXssSiH2,MAXdssS,Mor26m,AATS8Z,MAXssSe,Lipinski,Mor18m,MAXdsCH,Mor10v,Mor13m,Mor31m,Mor25,Mor06m,Mor06se,Mor16m,MDEN-33,MINssssC,MATS8v,Mor14,Mor07m,MINdSe,MINdO,MINssSe,Mor27se,Mor14v,AATSC8c,AATSC8are,MDEC-12,Mor17v,Mor10p,MINdsCH,MAXssCH2,Mor32,Mor28se,MAXaaSe,MINssSiH2,MDEO-22,Mor27m,MATS8are,AATSC8v,MAXsOH,MAXaaNH,MAXssPH,MINdssS,VE1_Dt,Mor21p,Mor15v,MINdCH2,MINssssSi,Mor05m,MAXddssSe,Mor12v,Mor27v,AATSC8dv,MAXsNH2,Mor03p,MINsssdAs,Mor12m,MATS8m,Mor32p,MAXsssSnH,MINssNH,Mor17,Mor31se,MAXsBr,Mor28,AATS8se,SpMax_Dt,Mor13p,Mor16p,MAXdssSe,MAXsPH2,GRAVHp,Mor04p,AATSC8se,AATSC8Z,MINssssBe,Mor07v,MAXaasC,MINsSnH3,MINssGeH2,Mor08v,MINssSnH2,Mor02p,MINsssNH,Mor06v,MAXsF,MAXsssssP,MAXssNH,MAXsssP,Mor22se,MDEN-22,GATS8Z,MINsCl,MAXsssdAs,Mor18se,MINaaaC,MDEN-23,MAXssssB,MAXssO,MINddssSe,MINsSiH3,MINaaN,Mor20m,Mor14se,Mor10m,Mor19se,Mor27p,MINaasN,MINsCH3,MINsF,Mor07,MAXssssSn,MAXdssC,MINssPbH2,Mor21,Mor08m,Mor21v,MATS8i,MAXddsN,Mor04se,MINtN,MAXssGeH2,MINaasC,SpMAD_Dt,MAXssssGe,Mor09p,MAXsCH3,MINssO,MINaaS,MAXssssBe,Mor14p,MINsNH3,MAXssNH2,Mor30v,Mor22v,MAXssssC,MINaaNH,Mor11p,MATS8dv,Mor30se,MAXaaaC,Mor24v,Mor24se,Mor23,MINdsssP,Mor11m,Mor12,Mor19m,DetourIndex,GATS8se,Mor09m"
-                common_columns = common_columns.split(",")
-                df = df.drop(common_columns, axis =1)
-                dataframes[name] = df
-            else:
-                # Calculate the minimum count of non-null values required 
-                min_count = int(((100 - threshold) / 100) * df.shape[0] + 1)
-                # Drop columns with insufficient non-null values
-                df_cleaned = df.dropna(axis=1, thresh=min_count)
-                dataframes[name] = df_cleaned
+            # Calculate the minimum count of non-null values required 
+            min_count = int(((100 - threshold) / 100) * df.shape[0] + 1)
+            # Drop columns with insufficient non-null values
+            df_cleaned = df.dropna(axis=1, thresh=min_count)
+            dataframes[name] = df_cleaned
         self.dataframes = dataframes
 
     def ImputeData(self, method="knn", class_specific = False):
@@ -540,23 +534,26 @@ class fusionData:
                                                 hidden_sizes=[128, 64, 36, 18],
                                                 **kwargs)
         elif method in ['AER']:
-            df_list2 = df_list
-            for df in df_list:
-                if df.shape[1] == 212:
-                    df_list2[0] = df
-                elif df.shape[1] == 384:
-                    df_list2[1] = df
-                elif df.shape[1] == 1422:
-                    df_list2[2] = df
-                elif df.shape[1] == 3200:
-                    df_list2[3] = df
-                elif df.shape[1] == 10000:
-                    df_list2[4] = df
-                elif df.shape[1] == 5000:
-                    df_list2[5] = df
-            all_embeddings, model_state = AutoencoderReconstructor(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[AER_dim])
-            fused_df1 = all_embeddings[0]
-            fused_df1.set_index("id",inplace =True)
+            df_list2=[None,None,None,None,None,None]
+            for name, df in self.dataframes.items():
+                if name.lower() == "mopac":
+                    df_list2[0] = df.copy()
+                elif name.lower() == "chemberta":
+                    df_list2[1] = df.copy()
+                elif name.lower() ==  "mordred":
+                    df_list2[2] = df.copy()
+                elif name.lower() ==  "signaturizer":
+                    df_list2[3] = df.copy()
+                elif name.lower() ==  "imagemol":
+                    df_list2[4] = df.copy()
+                elif name.lower() ==  "grover":
+                    df_list2[5] = df.copy()
+            scaler = StandardScaler()
+            all_embeddings, model_state = AutoencoderReconstructor_training(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[AER_dim])
+            self.training_AER_model = model_state
+            fused_df_unstandardized = all_embeddings[0]
+            fused_df_unstandardized.set_index("id",inplace =True)
+            fused_df1 = pd.DataFrame(scaler.fit_transform(fused_df_unstandardized), index=fused_df_unstandardized.index, columns=fused_df_unstandardized.columns)
 
 
 
@@ -650,22 +647,20 @@ class fusionData:
                 
                 df_list2=[None,None,None,None,None,None]
                 for name, df in self.dataframes.items():
-                    if df.shape[1] == 212:
+                    if name.lower() == "mopac":
                         df_list2[0] = df.copy()
-                    elif df.shape[1] == 384:
+                    elif name.lower() == "chemberta":
                         df_list2[1] = df.copy()
-                    elif df.shape[1] == 1422:
+                    elif name.lower() ==  "mordred":
                         df_list2[2] = df.copy()
-                    elif df.shape[1] == 3200:
+                    elif name.lower() ==  "signaturizer":
                         df_list2[3] = df.copy()
-                    elif df.shape[1] == 10000:
+                    elif name.lower() ==  "imagemol":
                         df_list2[4] = df.copy()
-                    elif df.shape[1] == 5000:
+                    elif name.lower() ==  "grover":
                         df_list2[5] = df.copy()
-
-                
                 #print(df_list2)
-                all_embeddings, model_state = AutoencoderReconstructor(df_list2[0], df_list2[1], df_list2[2], df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd])
+                all_embeddings, model_state = AutoencoderReconstructor_training(df_list2[0], df_list2[1], df_list2[2], df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd])
                 self.training_AER_model = model_state
                 self.AER_model_embt_size = embd
             else:
@@ -673,24 +668,26 @@ class fusionData:
             if AER_dim in [256, 512, 1024, 4096, 8192]:
                 embd = AER_dim
             else:
+                print("AER_embed size should be  ",256, 512, 1024, 4096, " or ", 8192)
                 embd = 4096
             
             df_list2=[None,None,None,None,None,None]
             for name, df in dataframes1.items():
-                if df.shape[1] == 212:
+                if name.lower() == "mopac":
                     df_list2[0] = df.copy()
-                elif df.shape[1] == 384:
+                elif name.lower() == "chemberta":
                     df_list2[1] = df.copy()
-                elif df.shape[1] == 1422:
+                elif name.lower() ==  "mordred":
                     df_list2[2] = df.copy()
-                elif df.shape[1] == 3200:
+                elif name.lower() ==  "signaturizer":
                     df_list2[3] = df.copy()
-                elif df.shape[1] == 10000:
+                elif name.lower() ==  "imagemol":
                     df_list2[4] = df.copy()
-                elif df.shape[1] == 5000:
+                elif name.lower() ==  "grover":
                     df_list2[5] = df.copy()
+            
             model_state = self.training_AER_model
-            all_embeddings = AutoencoderReconstructor2(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd], model_state=model_state)
+            all_embeddings = AutoencoderReconstructor_testing(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd], model_state=model_state)
             
             scaler = StandardScaler()
             fused_df_unstandardized = all_embeddings[0]
@@ -785,20 +782,20 @@ class fusionData:
             
             df_list2=[None,None,None,None,None,None]
             for name, df in dataframes1.items():
-                if df.shape[1] == 212:
+                if name.lower() == "mopac":
                     df_list2[0] = df.copy()
-                elif df.shape[1] == 384:
+                elif name.lower() == "chemberta":
                     df_list2[1] = df.copy()
-                elif df.shape[1] == 1422:
+                elif name.lower() ==  "mordred":
                     df_list2[2] = df.copy()
-                elif df.shape[1] == 3200:
+                elif name.lower() ==  "signaturizer":
                     df_list2[3] = df.copy()
-                elif df.shape[1] == 10000:
+                elif name.lower() ==  "imagemol":
                     df_list2[4] = df.copy()
-                elif df.shape[1] == 5000:
+                elif name.lower() ==  "grover":
                     df_list2[5] = df.copy()
             model_state = self.training_AER_model
-            all_embeddings = AutoencoderReconstructor2(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd], model_state=model_state)
+            all_embeddings = AutoencoderReconstructor_testing(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd], model_state=model_state)
             
             scaler = StandardScaler()
             fused_df_unstandardized = all_embeddings[0]
@@ -885,20 +882,20 @@ class fusionData:
             
             df_list2=[None,None,None,None,None,None]
             for name, df in dataframes1.items():
-                if df.shape[1] == 212:
+                if name.lower() == "mopac":
                     df_list2[0] = df.copy()
-                elif df.shape[1] == 384:
+                elif name.lower() == "chemberta":
                     df_list2[1] = df.copy()
-                elif df.shape[1] == 1422:
+                elif name.lower() ==  "mordred":
                     df_list2[2] = df.copy()
-                elif df.shape[1] == 3200:
+                elif name.lower() ==  "signaturizer":
                     df_list2[3] = df.copy()
-                elif df.shape[1] == 10000:
+                elif name.lower() ==  "imagemol":
                     df_list2[4] = df.copy()
-                elif df.shape[1] == 5000:
+                elif name.lower() ==  "grover":
                     df_list2[5] = df.copy()
             model_state = self.training_AER_model
-            all_embeddings = AutoencoderReconstructor2(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd], model_state=model_state)
+            all_embeddings = AutoencoderReconstructor_testing(df_list2[0],df_list2[1],df_list2[2],df_list2[3],df_list2[4],df_list2[5],embedding_sizes=[embd], model_state=model_state)
             
             scaler = StandardScaler()
             fused_df_unstandardized = all_embeddings[0]
@@ -1456,6 +1453,45 @@ class fusionData:
             #train_index, val_index, test_index = random_scaffold_split_train_val_test(index = self.prediction_labels.index.to_list(), smiles_list = self.smiles_col.to_list(), seed=0)
             self.train_dataframes, self.val_dataframes, self.test_dataframes, self.train_label, self.val_label, self.test_label  = save_train_test_data_s_fold(dataframes, prediction_labels, train_index, val_index, test_index)
 
+            test_metrics = {
+                "Model": [],
+                "Model type":[],
+                "AUC": [],
+                "Accuracy": [],
+                "Precision": [],
+                "Recall": [],
+                "f1 score":[],
+                "Balanced accuracy":[],
+                "MCC":[],
+                "Kappa":[],
+            }
+
+            train_metrics = {
+                "Model": [],
+                "Model type":[],
+                "AUC": [],
+                "Accuracy": [],
+                "Precision": [],
+                "Recall": [],
+                "f1 score":[],
+                "Balanced accuracy":[],
+                "MCC":[],
+                "Kappa":[],
+            }
+
+
+            val_metrics = {
+                "Model": [],
+                "Model type":[],
+                "AUC": [],
+                "Accuracy": [],
+                "Precision": [],
+                "Recall": [],
+                "f1 score":[],
+                "Balanced accuracy":[],
+                "MCC":[],
+                "Kappa":[],
+            }
 
             for method_chemdice in valid_methods_chemdices:
                 # Fuse all data in dataframes
@@ -1494,47 +1530,6 @@ class fusionData:
                 }
 
                 model_name = "RandomForestClassifier"
-
-
-                test_metrics = {
-                    "Model": [],
-                    "Model type":[],
-                    "AUC": [],
-                    "Accuracy": [],
-                    "Precision": [],
-                    "Recall": [],
-                    "f1 score":[],
-                    "Balanced accuracy":[],
-                    "MCC":[],
-                    "Kappa":[],
-                }
-
-                train_metrics = {
-                    "Model": [],
-                    "Model type":[],
-                    "AUC": [],
-                    "Accuracy": [],
-                    "Precision": [],
-                    "Recall": [],
-                    "f1 score":[],
-                    "Balanced accuracy":[],
-                    "MCC":[],
-                    "Kappa":[],
-                }
-
-
-                val_metrics = {
-                    "Model": [],
-                    "Model type":[],
-                    "AUC": [],
-                    "Accuracy": [],
-                    "Precision": [],
-                    "Recall": [],
-                    "f1 score":[],
-                    "Balanced accuracy":[],
-                    "MCC":[],
-                    "Kappa":[],
-                }
 
 
                 # Iterate over hyperparameters
@@ -2179,7 +2174,32 @@ class fusionData:
             # train_index, val_index, test_index = random_scaffold_split_train_val_test(index = self.prediction_label.index.to_list(), smiles_list = self.smiles_col.to_list(), seed=0)
             self.train_dataframes, self.val_dataframes, self.test_dataframes, self.train_label, self.val_label, self.test_label  = save_train_test_data_s_fold(dataframes, prediction_labels, train_index, val_index, test_index)
 
+            test_metrics = {
+                "Model": [],
+                "Model type":[],
+                "R2 Score": [],
+                "MSE": [],
+                "RMSE":[],
+                "MAE":[]
+                }
+            
+            train_metrics = {
+                "Model": [],
+                "Model type":[],
+                "R2 Score": [],
+                "MSE": [],
+                "RMSE":[],
+                "MAE":[]
+                }
 
+            val_metrics = {
+                "Model": [],
+                "Model type":[],
+                "R2 Score": [],
+                "MSE": [],
+                "RMSE":[],
+                "MAE":[]
+                }
             for method_chemdice in valid_methods_chemdices:
                 # Fuse all data in dataframes
                 print("Method name",method_chemdice)
@@ -2195,32 +2215,7 @@ class fusionData:
                 y_val = self.val_label
 
 
-                test_metrics = {
-                    "Model": [],
-                    "Model type":[],
-                    "R2 Score": [],
-                    "MSE": [],
-                    "RMSE":[],
-                    "MAE":[]
-                    }
-                
-                train_metrics = {
-                    "Model": [],
-                    "Model type":[],
-                    "R2 Score": [],
-                    "MSE": [],
-                    "RMSE":[],
-                    "MAE":[]
-                    }
 
-                val_metrics = {
-                    "Model": [],
-                    "Model type":[],
-                    "R2 Score": [],
-                    "MSE": [],
-                    "RMSE":[],
-                    "MAE":[]
-                    }
 
                 # Define models and their respective parameter grids
                 models = [

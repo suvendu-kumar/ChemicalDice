@@ -42,8 +42,8 @@ from torch.utils.data import Dataset, DataLoader
 import torch.nn.init as init
 import torch.backends.cudnn
 
-#device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-device = torch.device('cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#device = torch.device('cpu')
 
 def worker_init_fn(worker_id):
     worker_seed = torch.initial_seed() % 2**32

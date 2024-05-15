@@ -75,7 +75,7 @@ class ChemicalDiceIntegrator(nn.Module):
 
         return lst[:index] + lst[index + 1:]
     
-    def __init__(self, latent_space_dims, embedding_dim, lr=1e-3,weight_decay=0):
+    def __init__(self, latent_space_dims, embedding_dim, embd_sizes,embd_sizes_sum, lr=1e-3,weight_decay=0):
         super(ChemicalDiceIntegrator,self).__init__()
 
         self.latent_space_dims = latent_space_dims
@@ -84,12 +84,12 @@ class ChemicalDiceIntegrator(nn.Module):
         # for i in range(6):
         #     print(self.getAEDimensions(self.getSum(self.latent_space_dims, i), self.latent_space_dims[i]))
         # [20006, 19834, 18796, 17018, 10218, 15218]
-        self.encoders[f'{0}'] = Autoencoder([20006, 2223, 741, 212, 741, 2223, 20006])
-        self.encoders[f'{1}'] = Autoencoder([19834, 2204, 384, 2204, 19834])
-        self.encoders[f'{2}'] = Autoencoder([18796, 2089, 1422, 2089, 18796])
-        self.encoders[f'{3}'] = Autoencoder([17018, 5672, 3200, 5672, 17018])
-        self.encoders[f'{4}'] = Autoencoder([10218, 10000, 10218])
-        self.encoders[f'{5}'] = Autoencoder([15218, 5072, 5000, 5072, 15218])
+        self.encoders[f'{0}'] = Autoencoder([embd_sizes_sum[0], 2223, 741, embd_sizes[0], 741, 2223, embd_sizes_sum[0]])
+        self.encoders[f'{1}'] = Autoencoder([embd_sizes_sum[1], 2204, embd_sizes[1], 2204, embd_sizes_sum[1]])
+        self.encoders[f'{2}'] = Autoencoder([embd_sizes_sum[2], 2089, embd_sizes[2], 2089, embd_sizes_sum[2]])
+        self.encoders[f'{3}'] = Autoencoder([embd_sizes_sum[3], 5672, embd_sizes[3], 5672, embd_sizes_sum[3]])
+        self.encoders[f'{4}'] = Autoencoder([embd_sizes_sum[4], embd_sizes[4], embd_sizes_sum[4]])
+        self.encoders[f'{5}'] = Autoencoder([embd_sizes_sum[5], 5072, embd_sizes[5], 5072, embd_sizes_sum[5]])
 
         ae_dim = self.getAEDimensions(self.getSum(self.latent_space_dims, -1), embedding_dim)
         # print(ae_dim)

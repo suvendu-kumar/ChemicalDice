@@ -1,21 +1,21 @@
-# ChemicalDice
+# ChemicalDice: A Comprehensive Package for Molecular Property Prediction
 ![ChemicalDice Logo](docs/source/_static/images/logo/Chemicaldice_logo.png)
 
 
-ChemicalDice presents an innovative paradigm shift in cheminformatics
-and bioinformatics, leveraging advanced feature fusion methodologies to
-transcend traditional data silos. By ingeniously amalgamating disparate
-data modalities---ranging from chemical descriptors and molecular
-structures to omics data, images, and phenotype
-information---ChemicalDice pioneers a transformative approach. Through a
-rich arsenal of techniques including AER, PCA, ICA, IPCA, CCA, t-SNE,
-KPCA, RKS, SEM, Autoencoders, Tensor Decomposition, and PLSDA,
-ChemicalDice unlocks novel insights by unraveling the intricate
-interplay between chemical and biological entities within complex
-datasets. Its intuitive interface and comprehensive toolkit empower
-researchers to seamlessly navigate through the complexities of
-integrative analyses, heralding a new era of interdisciplinary research
-and discovery.
+ChemicalDice is a powerful and user-friendly package designed for molecular property prediction. It offers a comprehensive suite of tools for descriptor calculation, data preprocessing, and model building, making it an ideal choice for both beginners and experienced researchers in the field of chemoinformatics.
+
+## Key Features
+
+- **Descriptor Calculation**: ChemicalDice can calculate various types of descriptors from Simplified Molecular Input Line Entry System (SMILES) notation. This includes constitutional, topological, geometrical, and electronic descriptors, among others.
+
+- **Data Preprocessing**: The package provides robust data preprocessing capabilities, ensuring that your data is clean and ready for model building.
+
+- **Model Building**: ChemicalDice supports model building using both individual descriptor types and combined or fused descriptors. This flexibility allows users to build models that are tailored to their specific needs.
+
+- **Fused Descriptors**: One of the standout features of ChemicalDice is its ability to handle fused descriptors. These are combined descriptors that take into account all kinds of descriptors, resulting in more generalized predictions.
+
+By providing a streamlined and integrated workflow for molecular property prediction, ChemicalDice aims to accelerate research in the field of chemoinformatics. Whether you're predicting bioactivity, toxicity, or any other molecular property, ChemicalDice has got you covered.
+
 
 Environment Setup
 =================
@@ -102,12 +102,12 @@ during initialization of `fusionData`.
 from ChemicalDice.fusionData import fusionData
 
 data_paths = {
-    "tabular1":"data/Chemberta.csv",
-    "tabular2":"data/Grover.csv",
-    "tabular3":"data/mopac.csv",
-    "tabular4":"data/mordred.csv",
-    "tabular5":"data/Signaturizer.csv",
-    "tabular6": "data/ImageMol.csv"
+    "Chemberta":"data/Chemberta.csv",
+    "Grover":"data/Grover.csv",
+    "mopac":"data/mopac.csv",
+    "mordred":"data/mordred.csv",
+    "Signaturizer":"data/Signaturizer.csv",
+    "ImageMol": "data/ImageMol.csv"
 }
 ```
 

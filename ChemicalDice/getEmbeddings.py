@@ -59,19 +59,41 @@ class MyDataset(Dataset):
 
 from sklearn.preprocessing import StandardScaler
 
-def AutoencoderReconstructor(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes):
+def AutoencoderReconstructor_training(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes):
     
     scaler =StandardScaler()
     
     ids = X1.index.to_numpy()
 
+    embd_sizes =[X1.shape[1],X2.shape[1],X3.shape[1],X4.shape[1],X5.shape[1],X6.shape[1]]
 
-    X1 = scaler.fit_transform(X1)
-    X2 = scaler.fit_transform(X2)
-    X3 = scaler.fit_transform(X3)
-    X4 = scaler.fit_transform(X4)
-    X5 = scaler.fit_transform(X5)
-    X6 = scaler.fit_transform(X6)
+    def sum_except_self(nums):
+        total_sum = sum(nums)
+        return [total_sum - num for num in nums]
+
+    embd_sizes_sum = sum_except_self(embd_sizes)
+
+    # print(embd_sizes_sum)
+    # print(embd_sizes)
+
+    
+    # X1 = scaler.fit_transform(X1)
+    # X2 = scaler.fit_transform(X2)
+    # X3 = scaler.fit_transform(X3)
+    # X4 = scaler.fit_transform(X4)
+    # X5 = scaler.fit_transform(X5)
+    # X6 = scaler.fit_transform(X6)
+
+    X1 = X1.values
+    X2 = X2.values
+    X3 = X3.values
+    X4 = X4.values
+    X5 = X5.values
+    X6 = X6.values
+
+
+
+
     
     _, X1_dim = X1.shape
     _, X2_dim = X2.shape
@@ -80,12 +102,12 @@ def AutoencoderReconstructor(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes):
     _, X5_dim = X5.shape
     _, X6_dim = X6.shape
 
-    # print(X1.shape)
-    # print(X2.shape)
-    # print(X3.shape)
-    # print(X4.shape)
-    # print(X5.shape)
-    # print(X6.shape)
+    print(X1.shape)
+    print(X2.shape)
+    print(X3.shape)
+    print(X4.shape)
+    print(X5.shape)
+    print(X6.shape)
 
     # print(X1.shape[0])
 
@@ -105,8 +127,8 @@ def AutoencoderReconstructor(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes):
 
       latent_space_dims = [X1_dim, X2_dim, X3_dim, X4_dim, X5_dim, X6_dim]
       # print('k=', embed_dim)
-      net_cdi = ChemicalDiceIntegrator(latent_space_dims=latent_space_dims, embedding_dim=embed_dim).to(device)
-      net_cdi, loss_train, loss_val, _, _,model_state = trainAE(net_cdi, "test", embed_dim, data_loader, data_loader, 500, False)
+      net_cdi = ChemicalDiceIntegrator(latent_space_dims=latent_space_dims, embedding_dim=embed_dim, embd_sizes=embd_sizes, embd_sizes_sum=embd_sizes_sum).to(device)
+      net_cdi, loss_train, loss_val, _, _,model_state = trainAE(net_cdi, "test", embed_dim, data_loader, data_loader, 500, True)
       #net_cdi.load_state_dict(torch.load(f"../weights/trainAE_{dataset_name}/{embed_dim}_cdi.pt"))
       net_cdi.load_state_dict(model_state)
 
@@ -146,12 +168,22 @@ def AutoencoderReconstructor(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes):
     return all_embeddings, model_state
 
 
-def AutoencoderReconstructor2(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes, model_state):
+def AutoencoderReconstructor_testing(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes, model_state):
     
     scaler =StandardScaler()
     
     ids = X1.index.to_numpy()
 
+    embd_sizes =[X1.shape[1],X2.shape[1],X3.shape[1],X4.shape[1],X5.shape[1],X6.shape[1]]
+
+    def sum_except_self(nums):
+        total_sum = sum(nums)
+        return [total_sum - num for num in nums]
+
+    embd_sizes_sum = sum_except_self(embd_sizes)
+
+    print(embd_sizes_sum)
+    print(embd_sizes)
 
     X1 = scaler.fit_transform(X1)
     X2 = scaler.fit_transform(X2)
@@ -192,7 +224,7 @@ def AutoencoderReconstructor2(X1, X2, X3 ,X4 ,X5 , X6, embedding_sizes, model_st
 
       latent_space_dims = [X1_dim, X2_dim, X3_dim, X4_dim, X5_dim, X6_dim]
       #print('k=', embed_dim)
-      net_cdi = ChemicalDiceIntegrator(latent_space_dims=latent_space_dims, embedding_dim=embed_dim).to(device)
+      net_cdi = ChemicalDiceIntegrator(latent_space_dims=latent_space_dims, embedding_dim=embed_dim, embd_sizes=embd_sizes, embd_sizes_sum=embd_sizes_sum).to(device)
       #net_cdi, loss_train, loss_val, _, _,model_state = trainAE(net_cdi, "test", embed_dim, data_loader, data_loader, 5, True)
       #net_cdi.load_state_dict(torch.load(f"../weights/trainAE_{dataset_name}/{embed_dim}_cdi.pt"))
       net_cdi.load_state_dict(model_state)
