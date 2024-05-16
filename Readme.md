@@ -276,7 +276,7 @@ Metrics of all the models can be accessed by `Accuracy_metrics` in
 ## Accuracy metrics all models
 fusiondata.Accuracy_metrics
 #top 10 models 
-top_models = fuseiondata.Accuracy_metrics.iloc[0:100,:]
+top_models = fusiondata.Accuracy_metrics.iloc[0:100,:]
 ```
 
 Plotting of the `Accuracy_metrics` can done by the following function.
