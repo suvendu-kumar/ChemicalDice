@@ -81,6 +81,16 @@ class ChemicalDiceIntegrator(nn.Module):
         self.latent_space_dims = latent_space_dims
         self.encoders = nn.ModuleDict({})
 
+        self.choice = 1
+
+        if self.choice == 2:
+            self.weights = nn.ParameterList([nn.Parameter(torch.ones(1)) for _ in range(len(latent_space_dims))])
+        elif self.choice == 1:
+            self.weights = nn.ParameterList([nn.Parameter(torch.ones(1, latent_space_dims[i])) for i in range(len(latent_space_dims))])
+        else:
+            raise ValueError("Invalid choice value. Choose 1 or 2.")
+
+
         # for i in range(6):
         #     print(self.getAEDimensions(self.getSum(self.latent_space_dims, i), self.latent_space_dims[i]))
         # [20006, 19834, 18796, 17018, 10218, 15218]
@@ -97,6 +107,13 @@ class ChemicalDiceIntegrator(nn.Module):
         
 
     def forward(self, x):
+
+        for i in range(len(x)):
+            if self.choice == 2:
+                x[i] = x[i] * self.weights[i]
+            elif self.choice == 1:
+                x[i] = x[i] * self.weights[i]
+
         inp = []
         for i in range(len(x)):
             inp += [torch.cat(self.remove_element_at_index(x, i), dim=1)]
@@ -105,7 +122,7 @@ class ChemicalDiceIntegrator(nn.Module):
         op = []
 
         for i in range(len(x)):
-            enc_n = self.encoders[f'{i}'].encode(inp[i])
+            #enc_n = self.encoders[f'{i}'].encode(inp[i])
             # print(enc_n.shape)
             enc += [self.encoders[f'{i}'].encode(inp[i])]
             op += [self.encoders[f'{i}'](inp[i])]
@@ -117,15 +134,56 @@ class ChemicalDiceIntegrator(nn.Module):
         concat_key_op = self.encoders[f'{i}'](concat_key)
 
         return enc[0], enc[1], enc[2], enc[3], enc[4], enc[5], op[0], op[1], op[2], op[3], op[4], op[5], concat_key_enc, concat_key_op
+    
+
+
+class FineTuneChemicalDiceIntegrator(nn.Module):
+
+    def getAEDimensions(self, inp_dim, latent_space_dim):
+        ae_dim = []
+        this_dim = inp_dim
+        while this_dim > latent_space_dim:
+            ae_dim += [this_dim]
+            this_dim = math.ceil(this_dim/3)
+        
+        return ae_dim + [latent_space_dim] + ae_dim[::-1]
+    
+    def __init__(self, CDI, user_embed_dim=128, default_embed_dim=8000, lr=1e-3,weight_decay=0):
+        super(FineTuneChemicalDiceIntegrator,self).__init__()
+
+        self.user_embed_dim = user_embed_dim
+        self.CDI = CDI.to(device)
+
+        for _, param in self.CDI.named_parameters():
+            param.requires_grad = False
+
+        
+        ae_dim = self.getAEDimensions(default_embed_dim, user_embed_dim)
+        self.finetuner = Autoencoder(ae_dim).to(device)
+        
+
+    def forward(self, x):
+        _, _, _, _, _, _, _, _, _, _, _, _, output, _ = self.CDI.forward(x)
+        return output, self.finetuner(output)
+    
+    def getEmbed(self, x):
+        _, _, _, _, _, _, _, _, _, _, _, _, output, _ = self.CDI.forward(x)
+        return self.finetuner.encode(output)
+
+
 
 class Classifier(nn.Module):
     def __init__(self, latent_space_dim = 100, lr=1e-3,weight_decay=0):
         super(Classifier,self).__init__()
         self.latent_space_dim = latent_space_dim
         self.classifier = nn.Sequential(
-          nn.Linear(100, 100),
+          nn.Linear(2048, 512),
           nn.ReLU(),
-          nn.Linear(100, 2),
+          nn.Linear(512, 128),
+          nn.ReLU(),
+          nn.Linear(128, 32),
+          nn.ReLU(),
+          nn.Linear(32, 2),
         )
         
 

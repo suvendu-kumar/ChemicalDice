@@ -49,7 +49,7 @@ def plot_metrics(metrics_df, dataset_name):
 
 
 
-def plot_model_boxplot(metrics_df, save_dir=None):
+def plot_models_boxplot(metrics_df, save_dir=None):
     """
     Plots the performance metrics of different models on a boxplot chart.
 
@@ -196,14 +196,13 @@ def plot_models_barplot(matrics,save_dir):
     else:
         metrics_list = ["R2 Score" , "MSE", "RMSE", "MAE"]
     for met in metrics_list:
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(16, 8), dpi=80)
         # Assuming dfs_train, dfs_test, and dfs_val are your dataframes for train, test, and validation data
         # Concatenate AUC values from train, test, and validation dataframes
-        df_auc = pd.concat([train_df[met][:30], val_df[met][:30], test_df[met][:30]], axis=1)
+        df_auc = pd.concat([train_df[met], val_df[met], test_df[met]], axis=1)
         df_auc.columns = ['Train', 'Validation', 'Test', ]  # Rename columns
         df_auc['Model'] = train_df['Model']
         # Plot the grouped bar chart
-        plt.figure(figsize=(16, 8), dpi=80)
         threshold = 10  # Example threshold
         # Filter out rows where any value exceeds the threshold
         df_auc = df_auc[(df_auc['Train'] < threshold) & (df_auc['Validation'] < threshold) & (df_auc['Test'] < threshold)]
@@ -223,7 +222,7 @@ def plot_models_barplot(matrics,save_dir):
         plt.xlabel("Models") 
         plt.ylabel(met) 
         plt.legend(["Training", "Validation", "Testing"]) 
-        plt.show() 
+        #p#lt.show() 
         #ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
         #sns.barplot(data=df_auc, palette="Set3", linewidth=2.5)
         # Set labels and title
@@ -241,6 +240,7 @@ def plot_models_barplot(matrics,save_dir):
                 os.makedirs(save_dir)
             # Save the plot to the directory
             plt.savefig(os.path.join(save_dir, f"metrics_{met}.png"))
+            plt.close()
         else:
             # Show the plot
             plt.show()

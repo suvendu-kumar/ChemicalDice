@@ -302,16 +302,13 @@ def apply_analysis_nonlinear4(data, analysis_type, n_components=None, tol=10e-6,
     :rtype: pandas.DataFrame
 
     """
-    if analysis_type.lower() == 'tensordecompose':
-        tensor_all = tl.tensor(data)
-        # Perform the CP decomposition
-        weights, factors = parafac(tensor_all, rank=n_components, init='random', tol=tol)
-        # Reconstruct the image from the factors
-        #cp_rec = tl.cp_to_tensor((weights, factors))
-        X_combined=factors[1]
-        return X_combined
-    else:
-        raise ValueError(f"Supported analysis types is: {', '.join(analysis_type)}")
+    tensor_all = tl.tensor(data)
+    # Perform the CP decomposition
+    weights, factors = parafac(tensor_all, rank=n_components, init='random', tol=tol)
+    # Reconstruct the image from the factors
+    #cp_rec = tl.cp_to_tensor((weights, factors))
+    X_combined=factors[1]
+    return X_combined
     
 
 

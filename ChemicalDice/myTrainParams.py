@@ -177,7 +177,7 @@ def trainModel(model, embed_dim, train_loader, val_loader, epochs, verbose):
     LEARNING_RATE = 1e-3
     # LEARNING_RATE = 1e-2
     # LEARNING_RATE = 1e-1
-    WEIGHT_DECAY = 0
+    WEIGHT_DECAY = 1e-4
     OPTIMIZER = optim.Adam(model.parameters(), lr = LEARNING_RATE, weight_decay=WEIGHT_DECAY)
     SCHEDULER = optim.lr_scheduler.ReduceLROnPlateau(OPTIMIZER, patience = 3, verbose = verbose)
 
@@ -236,7 +236,7 @@ def trainModel(model, embed_dim, train_loader, val_loader, epochs, verbose):
         acc_train.append(train_acc)
 
         if verbose: print(f'Epoch: {epoch + 1} Training loss: {round(average_batch_loss_train, 3)} Training acc: {round(train_acc, 3)} ')
-        file_path = f"../weights/trainCLS_1/{embed_dim}"
+        file_path = f"../weights/trainCLS_Exp_2/{embed_dim}/"
         makeDir(file_path)
         torch.save(model.state_dict(), file_path + f'{epoch + 1}.pt')
         

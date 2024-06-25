@@ -17,24 +17,63 @@ from tqdm import tqdm
 
 import tarfile
 
-def extract_tar_gz(file_path):
-    with tarfile.open(file_path, 'r:gz') as tar:
-        tar.extractall()
 
 
+from ChemicalDice.quantum_need import *
 
 import requests
 
-def download_file(url, filename):
-    response = requests.get(url, stream=True)
-    with open(filename, 'wb') as file:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                file.write(chunk)
+
 
 
 
 def get_mopac_prerequisites():
+    """
+    Download and set up the prerequisites for MOPAC and Morse.
+
+    This function performs the following steps:
+    1. Downloads the MOPAC tarball from a specified URL.
+    2. Extracts the contents of the downloaded tarball.
+    3. For Windows systems, downloads a precompiled version of 3D Morse.
+    4. For non-Windows systems, downloads the source code of 3D Morse, modifies it to be compatible with the system, and compiles it.
+
+    The function prints messages indicating the progress of the setup process.
+
+    Steps:
+    -------
+    1. **Download MOPAC**: The MOPAC software is downloaded from its official GitHub release page.
+    2. **Extract MOPAC**: The downloaded tarball is extracted.
+    3. **Download/Compile 3D Morse**:
+       - For Windows: A precompiled executable is downloaded.
+       - For non-Windows: The source code is downloaded, necessary modifications are made, and the source code is compiled.
+
+    Downloads:
+    ----------
+    - MOPAC: https://github.com/openmopac/mopac/releases/download/v22.1.1/mopac-22.1.1-linux.tar.gz
+    - 3D Morse executable (Windows): https://github.com/devinyak/3dmorse/blob/master/3dmorse.exe
+    - 3D Morse source code (non-Windows): https://raw.githubusercontent.com/devinyak/3dmorse/master/3dmorse.cpp
+    - Header files for compilation:
+        - tchar.h: https://home.cs.colorado.edu/~main/cs1300-old/include/tchar.h
+        - _mingw.h: https://home.cs.colorado.edu/~main/cs1300-old/include/_mingw.h
+
+    Modifications:
+    --------------
+    - The header file `tchar.h` is replaced with the downloaded version.
+    - The `3dmorse.cpp` file is modified to include the necessary headers for math functions.
+
+    Compilation:
+    ------------
+    - The `3dmorse.cpp` file is compiled using `g++` for non-Windows systems.
+
+    Cleanup:
+    --------
+    - Intermediate files used for compilation are deleted after the executable is created.
+
+    Prints:
+    -------
+    - Status messages indicating the progress of each step.
+
+    """
     # URL of the file to be downloaded
     url = "https://github.com/openmopac/mopac/releases/download/v22.1.1/mopac-22.1.1-linux.tar.gz"
 
@@ -80,113 +119,48 @@ def get_mopac_prerequisites():
 
 
 
-# important function for mopac
-def smile_to_mol2_uff(smile, steps, filename):
-        mymol = pybel.readstring("smi", smile)
-        #print(mymol.molwt)
-        mymol.make3D(steps=steps,forcefield='uff')
-        mymol.write(format="mol2",filename=filename,overwrite=True)
-
-def smile_to_mol2_mmff(smile, steps, filename):
-        mymol = pybel.readstring("smi", smile)
-        #print(mymol.molwt)
-        mymol.make3D(steps=steps,forcefield='mmff94')
-        mymol.write(format="mol2",filename=filename,overwrite=True)
-
-def ReadFile(filename):
-    inputdict={}
-    f=open(filename,'r')
-    lines_list=f.read().split("\n")
-    #print(lines_list)
-    lines_list=[lines.strip() for lines in lines_list]
-    #print(lines_list)
-    descriptor_list=['HEAT OF FORMATION','GRADIENT NORM','DIPOLE','NO. OF FILLED LEVELS','IONIZATION POTENTIAL','HOMO LUMO ENERGIES (EV)','MOLECULAR WEIGHT','COSMO AREA','COSMO VOLUME','SCF CALCULATIONS']
-    descriptors_values=[]
-    for descriptors in descriptor_list:
-        for lines in lines_list:
-            if lines.startswith(descriptors):
-                desc=re.findall(r"[-+]?(?:\d*\.*\d+)", lines)
-                desc=[float(des) for des in desc]
-                descriptors_values.append(desc)
-    return(descriptors_values)
-
-
-
-def ReadFile(filename, mol_name, smile):
-    inputdict={}
-    inputdict['mol_id']=mol_name
-    inputdict['SMILES']=smile
-    f=open(filename,'r')
-    lines_list=f.read().split("\n")
-    #print(lines_list)
-    lines_list=[lines.strip() for lines in lines_list]
-    #print(lines_list)
-    descriptor_list=['HEAT OF FORMATION','GRADIENT NORM','DIPOLE','NO. OF FILLED LEVELS','IONIZATION POTENTIAL','HOMO LUMO ENERGIES (EV)','MOLECULAR WEIGHT','COSMO AREA','COSMO VOLUME','SCF CALCULATIONS']
-    descriptors_values=[]
-    for descriptors in descriptor_list:
-        for lines in lines_list:
-            if lines.startswith(descriptors):
-                desc=re.findall(r"[-+]?(?:\d*\.*\d+)", lines)
-                desc=[float(des) for des in desc]
-                descriptors_values.append(desc)
-    # HEAT OF FORMATION
-    inputdict['Hf']=descriptors_values[0][1]
-    # GRADIENT NORM
-    inputdict['GN']=descriptors_values[1][0]
-    # GRADIENT NORM PER ATOM
-    inputdict['GNPA']=descriptors_values[1][1]
-    # DIPOLE
-    inputdict['mu']=descriptors_values[2][0]
-    # NO. OF FILLED LEVELS
-    inputdict['NFL']=descriptors_values[3][0]
-    # IONIZATION POTENTIAL
-    inputdict['IP']=descriptors_values[4][0]
-    # HOMO LUMO ENERGIES (EV)
-    inputdict['EHomo']=descriptors_values[5][0]
-    inputdict['ELumo']=descriptors_values[5][1]
-    # MOLECULAR WEIGHT
-    inputdict['Mw']=descriptors_values[6][0]
-    # COSMO AREA
-    inputdict['CoArea']=descriptors_values[7][0]
-    # COSMO VOLUME
-    inputdict['CoVolume']=descriptors_values[8][0]
-    f.close()
-    return inputdict
-
-
-def CalculateBasicQC(inputdict):
-    EHomo=inputdict['EHomo']
-    ELumo=inputdict['ELumo']
-    dict={}
-    dict.update(inputdict)
-    dict['ChemicalPotential']=(ELumo+EHomo)/2.0
-    dict['ChemicalHardness']=(ELumo-EHomo)/2.0
-    dict['ChemicalSoftness']=1-dict['ChemicalHardness']
-    dict['Electrophilicity']=(dict['ChemicalPotential']**2)/(2*dict['ChemicalHardness'])
-    dict['fHL']=EHomo/ELumo
-    dict['EA']=-ELumo
-    dict['xmu']=(-ELumo-EHomo)/2.0
-    dict['S']=2./(ELumo-EHomo)
-    dict['GAP']=ELumo-EHomo
-    return dict
-
-
-def calculate_formalCharge_Multiplicity(file_path, file_format):
-    # Create an Open Babel molecule object
-    mol = openbabel.OBMol()
-    # Read the input chemical structure from the file
-    obConversion = openbabel.OBConversion()
-    obConversion.SetInFormat(file_format)
-    obConversion.ReadFile(mol, file_path)
-    formal_charge = mol.GetTotalCharge()
-    multiplicity = mol.GetTotalSpinMultiplicity()
-    return (formal_charge,multiplicity)
 
 import multiprocessing
 cpu_to_use = multiprocessing.cpu_count() * 0.5
 cpu_to_use = int(cpu_to_use)
 
 def descriptor_calculator(input_file,output_file, output_dir = "temp_data/mopfiles",ncpu=cpu_to_use):
+  """
+  Calculate molecular descriptors using MOPAC and Morse for a list of molecules.
+
+  This function performs the following steps:
+  1. Reads the input file containing molecule information.
+  2. Generates MOPAC input files for each molecule.
+  3. Runs MOPAC calculations to obtain quantum chemical descriptors.
+  4. Runs 3D Morse calculations to obtain Morse descriptors.
+  5. Writes the calculated descriptors to the output file.
+
+  Parameters
+  ----------
+  input_file : str
+      Path to the input CSV file containing molecule information.
+      The CSV file should have the following columns: 'mol2_files', 'id', 'SMILES'.
+  output_file : str
+      Path to the output CSV file where the descriptors will be written.
+  output_dir : str, optional
+      Directory where MOPAC input and output files will be stored.
+      Default is "temp_data/mopfiles".
+  ncpu : int, optional
+      Number of CPU cores to use for MOPAC calculations.
+      Default is the value of the `cpu_to_use` variable.
+
+  Notes
+  -----
+  The input CSV file should have the following columns:
+  - 'mol2_files': Path to the mol2 file for each molecule.
+  - 'id': Unique identifier for each molecule.
+  - 'SMILES': SMILES string representation of each molecule.
+
+  The function creates MOPAC input files for each molecule and runs MOPAC calculations
+  to obtain quantum chemical descriptors. It then runs 3D Morse calculations to obtain
+  Morse descriptors. The calculated descriptors are written to the output CSV file.
+
+  """
   start_from = 0
   if not os.path.exists(output_dir):
       os.makedirs(output_dir)
@@ -206,6 +180,7 @@ def descriptor_calculator(input_file,output_file, output_dir = "temp_data/mopfil
     f = open(output_file,"a+")
 
   for mol2file_name,id,smile in zip(mol2file_name_list, id_list, smiles_list):
+    # print("=",end="")
     try:
       n+=1
       if n < start_from:
@@ -286,6 +261,7 @@ def descriptor_calculator(input_file,output_file, output_dir = "temp_data/mopfil
       print(" Error in descriptor calculation ",end="\n")
       print(id)
       print(e)
+  print()
   f.close()
 
 

@@ -1,8 +1,0 @@
-name: chemdice
-channels:
-  - defaults
-dependencies:
-  - python=3.10
-  - conda-forge::openbabel
-  - conda-forge::cpulimit
-prefix: /home/suvenduk/miniconda3/envs/chemdice

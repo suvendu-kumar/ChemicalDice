@@ -17,21 +17,11 @@ from ChemicalDice.splitter import split_train_val_test_idx, split_train_val_test
 
 import requests
 
-def download_file(url, filename):
-    response = requests.get(url, stream=True)
-    with open(filename, 'wb') as file:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                file.write(chunk)
+from ChemicalDice.imagemol_need import *
 
-def get_imagemol_prerequisites(path):
-    # URL of the file to be downloaded
-    url = "https://raw.githubusercontent.com/suvendu-kumar/ImageMol_model/main/ImageMol.pth.tar"
-    # Name of the file to save as
-    filename = os.path.join(path,"ImageMol.pth.tar")
-    download_file(url, filename)
-    print("ImageMol model is downloaded")
-    return filename
+
+
+
 
 #import torch
 import torchvision.models as models
@@ -41,80 +31,72 @@ import pandas as pd
 import csv
 
 
-def writeEmbeddingsIntoFile(file_path, file_name, ids, embeddings):
-    if not os.path.exists(file_path):
-        os.makedirs(file_path) 
-    with open(file_path + file_name, mode='w', newline='') as file:
-        writer = csv.writer(file) 
-        for row in range(len(ids)):
-            writer.writerow(np.concatenate(([ids[row]], embeddings[row])))
-    print(len(ids), embeddings.shape)
-
-def get_filename_without_extension(file_path):
-    base_name = os.path.basename(file_path)
-    filename_without_extension = os.path.splitext(base_name)[0]
-    return filename_without_extension
 
 from rdkit import Chem
 from rdkit.Chem import Draw
 
-def smile_to_img(smiles_list,smiles_id_list,output_dir):
-    image_file_paths = []
-    for smis, index in zip(smiles_list,smiles_id_list):
-        file_path = os.path.join(output_dir,index + ".png")
-        #image = Smiles2Img2(smis, , savePath=file_path)
-        size=224
-        mol = Chem.MolFromSmiles(smis)
-        img = Draw.MolsToGridImage([mol], molsPerRow=1, subImgSize=(size, size),returnPNG=False)
-        if file_path is not None:
-            img.save(file_path)
-        if img is None:
-            print("Error in smile to image for ", index, smis)
-            image_file_paths.append('')
-        else:    
-            image_file_paths.append(file_path)
-    return image_file_paths
 
+def get_imagemol_prerequisites(path):
+    """
+    Ensure that prerequisites for the ImageMol model are available in the specified directory.
 
-def is_valid_smiles(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    return mol is not None
+    This function downloads the ImageMol model file ('ImageMol.pth.tar') from a GitHub repository 
+    and saves it in the specified directory.
 
+    Parameters
+    ----------
+    path : str
+        Directory path where the ImageMol model file will be stored.
 
-def add_image_files(input_file, output_dir):
-    smiles_df = pd.read_csv(input_file)
-    if not os.path.exists(output_dir):
-        print("making directory ", output_dir)
-        os.makedirs(output_dir)
-    smiles_list = smiles_df['Canonical_SMILES']
-    if 'id' in smiles_df.columns:
-        smiles_id_list = smiles_df['id']
-    else:
-        smiles_df['id'] = [ "C"+str(id) for id in range(len(smiles_list))]
-        smiles_id_list = smiles_df['id']
+    Returns
+    -------
+    str
+        Path to the downloaded ImageMol model file ('ImageMol.pth.tar').
     
-    smiles_list_valid = []
-    smiles_id_list_valid = []
-    for smiles,id in zip(smiles_list,smiles_id_list):
-        if is_valid_smiles(smiles):
-            smiles_list_valid.append(smiles)
-            smiles_id_list_valid.append(id)
-        else:
-            print("This is a invalid smiles: ", smiles)
     
-    smiles_list = smiles_list_valid
-    smiles_id_list = smiles_id_list_valid
+    """
 
-    image_file_paths = smile_to_img(smiles_list, smiles_id_list, output_dir)
-    smiles_df['image_files'] = image_file_paths
-    smiles_df.to_csv(input_file,index=False)
-
-import pkg_resources
+    # URL of the file to be downloaded
+    url = "https://raw.githubusercontent.com/suvendu-kumar/ImageMol_model/main/ImageMol.pth.tar"
+    # Name of the file to save as
+    filename = os.path.join(path,"ImageMol.pth.tar")
+    download_file(url, filename)
+    print("ImageMol model is downloaded")
+    return filename
 
 # Get the absolute path of the checkpoint file
 
 
 def image_to_embeddings(input_file, output_file_name):
+    """
+    Convert images referenced in an input CSV file to embeddings using the ImageMol model and save them to a CSV file.
+
+    Parameters
+    ----------
+    input_file : str
+        Path to the input CSV file containing references to images.
+    output_file_name : str
+        Path to the output CSV file where the embeddings will be saved.
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    This function assumes the existence of pretrained models and required setup for ImageMol. 
+    It processes images from the input CSV file, extracts embeddings using a pretrained ResNet18 model, 
+    and saves the embeddings to the specified output CSV file.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the input CSV file (`input_file`) does not exist.
+
+    IOError
+        If there is an issue with reading the input CSV file or writing the output CSV file.
+
+    """
     #csv_filename = input_file
     #image_folder_224 = input_dir
     add_image_files(input_file, output_dir = "temp_data/images/")

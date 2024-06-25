@@ -57,6 +57,7 @@ def generate_fingerprints(args: dict, logger: Logger = None) -> List[List[float]
     """
 
     checkpoint_path = args.checkpoint_path
+    #print(args)
     if logger is None:
         logger = create_logger('fingerprints', quiet=False)
     print('Loading data')

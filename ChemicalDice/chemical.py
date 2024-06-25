@@ -7,24 +7,22 @@ from tqdm import tqdm
 
 def descriptor_calculator(input_file,output_file):
   """
-  Calculate descriptors for a given set of SMILES strings and save the results to a CSV file.
+  Calculate molecular descriptors for the molecules in the input file and save the results to the output file.
+
+  This function reads SMILES strings and corresponding SDF file names from an input CSV file, calculates 
+  molecular descriptors for each molecule, and writes the results to an output CSV file. The descriptors 
+  are calculated using the mordred package.
 
   Parameters
   ----------
   input_file : str
-      The path to the input CSV file. The file should contain a column 'SMILES' with SMILES strings, a column 'id' with unique identifiers, and a column 'sdf_files' with the paths to the corresponding SDF files.
+      Path to the input CSV file containing SMILES strings and SDF file names.
   output_file : str
-      The path to the output CSV file where the calculated descriptors will be saved.
+      Path to the output CSV file where the calculated descriptors will be saved.
 
   Returns
   -------
   None
-
-  Notes
-  -----
-  The function uses the Calculator class to calculate descriptors.
-  The resulting descriptors are saved to a CSV file with the columns 'id', 'SMILES', and descriptor columns.
-  If an error occurs during descriptor calculation for a molecule, an error message is printed and the calculation continues with the next molecule.
   """
   smiles_df = pd.read_csv(input_file)
   sdffile_name_list = smiles_df['sdf_files']

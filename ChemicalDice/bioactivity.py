@@ -21,7 +21,7 @@ def calculate_descriptors(input_file, output_file):
   Notes
   -----
   The function uses the 'GLOBAL' model of the Signaturizer class to calculate descriptors.
-  The resulting DataFrame is saved to a CSV file with the columns 'id', 'SMILES', and descriptor columns (prefixed with 'Sign_').
+  The resulting DataFrame is saved to a CSV file with the columns 'id', 'SMILES', and descriptor columns.
   """
   smiles_df = pd.read_csv(input_file)
   smiles = smiles_df['Canonical_SMILES']

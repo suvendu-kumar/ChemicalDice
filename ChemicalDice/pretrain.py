@@ -87,7 +87,7 @@ def run_training(args, logger):
 
     # load file paths of the data.
     if master_worker:
-        print(args)
+        # print(args)
         if args.enable_multi_gpu:
             debug("Total workers: %d" % (mgw.size()))
         debug('Loading data')
