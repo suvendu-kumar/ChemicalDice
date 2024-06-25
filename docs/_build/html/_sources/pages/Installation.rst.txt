@@ -1,0 +1,42 @@
+Installation
+============
+
+Environment set up
+------------------
+
+To setup an environment to run ChemicalDice you can install miniconda
+using command.
+
+.. code:: bash
+
+   wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+   bash Miniconda3-latest-Linux-x86_64.sh
+
+Follow the prompts after above commands to install conda. Make a
+separate environment named chemdice using the conda create
+
+.. code:: bash
+
+   conda create -n chemicaldice python=3.9
+   conda activate chemicaldice
+
+Install packages
+----------------
+
+To use the **ChemicalDice** package, you need to install it along with
+its dependencies. You can install ChemicalDice and its dependencies
+using the following command:
+
+.. code:: bash
+
+   pip install -i https://test.pypi.org/simple/ ChemicalDice==0.3.9
+   pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 --index-url https://download.pytorch.org/whl/rocm5.7
+   pip install multitasking==0.0.11 pandas==2.0.3 scikit-learn==1.2.2 seaborn==0.13.1 tqdm==4.66.4 xgboost==2.0.3
+   pip install rdkit==2023.9.6 signaturizer==1.1.14 descriptastorus==2.6.1 mordred==1.2.0 tensorly==0.8.1 transformers==4.40.1
+   pip install --upgrade tensorflow==2.15
+   conda install conda-forge::openbabel
+   conda install conda-forge::cpulimit
+
+This command installs Chemicaldice along with the required dependencies.
+Make sure to have the appropriate versions of these packages compatible
+with ChemicalDice.
