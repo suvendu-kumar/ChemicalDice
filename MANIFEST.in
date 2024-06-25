@@ -1,2 +1,2 @@
-include ChemicalDice/*.py
+include FeatureDice/*.py
 recursive-include docs *

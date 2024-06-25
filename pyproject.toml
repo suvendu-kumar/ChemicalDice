@@ -4,12 +4,11 @@ requires = [
 	"wheel"
 ]
 build-backend = "setuptools.build_meta"
-
 [project]
-name = "ChemicalDice"
-version = "0.5.3"
+name = "FeatureDice"
+version = "1.0.0"
 readme = "Readme.rst"
-description = "ChemicalDice: Transforming cheminformatics and bioinformatics with advanced data fusion analysis."
+description = "FeatureDice: Transforming cheminformatics/bioinformatics with advanced data fusion analysis."
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -17,29 +16,17 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-]
-optional-dependencies = { docs = [
-    "sphinx",
-    "sphinx-gallery",
-    "sphinx-rtd-theme",	
-    "seaborn",
+	"seaborn",
     "matplotlib",
     "numpy",
     "pandas",
     "scikit-learn",
 	"tensorly",
     "torch",
-    "tqdm"
+    "tqdm",
+]
+optional-dependencies = { docs = [
+    "sphinx",
+    "sphinx-gallery",
+    "sphinx-rtd-theme"
 ] }
-
-[project.scripts]
-ChemicalDice = "ChemicalDice.__main__:main"
-
-[tool.setuptools]
-py-modules = ['ChemicalDice']
-
-[tool.setuptools.packages.find]
-where = ["."]  # list of folders that contain the packages (["."] by default)
-include = ["ChemicalDice"]  # package names should match these glob patterns (["*"] by default)
-exclude = []  # exclude packages matching these glob patterns (empty by default)
-namespaces = false  # to disable scanning PEP 420 namespaces (true by default)

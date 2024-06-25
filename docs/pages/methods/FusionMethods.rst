@@ -16,7 +16,6 @@ fields such as machine learning, signal processing, and data mining,
 where the ability to extract meaningful information from large and
 complex datasets is key.
 
-
 Linear methods
 --------------
 

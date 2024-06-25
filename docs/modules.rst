@@ -1,7 +1,7 @@
-ChemicalDice
-============
+FeatureDice
+===========
 
 .. toctree::
    :maxdepth: 4
 
-   ChemicalDice
+   FeatureDice

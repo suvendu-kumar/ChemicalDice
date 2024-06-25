@@ -1,4 +1,3 @@
-
 Normalization Methods
 =====================
 
@@ -39,8 +38,9 @@ Normalization
 
    .. math::
 
-      \text{L1 normalized x } = `\left[ \frac{x_1}{\sum_{i=1}^{n} |x_i|}, \frac{x_2}{\sum_{i=1}^{n} |x_i|}, \ldots, \frac{x_n}{\sum_{i=1}^{n} |x_i|} \right]`
 
+       L1−Norm=∑∣xi∣
+       
 
 3. **L2 Normalization (Ridge Norm or Euclidean Norm)**: Also known as
    Ridge Norm or Euclidean Norm, this method rescales each observation
@@ -54,8 +54,9 @@ Normalization
 
    .. math::
 
-      \text{L2 normalized x} = `\left[ \frac{x_1}{\sqrt{\sum_{i=1}^{n} x_i^2}}, \frac{x_2}{\sqrt{\sum_{i=1}^{n} x_i^2}}, \ldots, \frac{x_n}{\sqrt{\sum_{i=1}^{n} x_i^2}} \right]`
 
+       L2−Norm=∑xi2
+       
 
 4. **Max Normalization (Maximum Normalization)**: This method scales
    each feature in the dataset by dividing it by the maximum absolute
@@ -80,7 +81,7 @@ Scaling
    .. math::
 
 
-       \frac{x - \text{mean}(x)}{\text{std}(x)}
+       std(x)x−mean(x)
        
 
 2. **Min-Max**: This method applies the min-max scaler method to each
@@ -91,9 +92,9 @@ Scaling
 
    .. math::
 
-      \frac{x - \min(x)}{\max(x) - \min(x)}
 
-
+       max(x)−min(x)x−min(x)
+       
 
 3. **Robust**: This method applies the robust scaler method to each
    column of the dataframe. It transforms the data using the median and
@@ -105,7 +106,7 @@ Scaling
    .. math::
 
 
-       \frac{x - \text{median}(x)}{\text{IQR}(x)}
+       IQR(x)x−median(x)
        
 
 4. **Pareto**: This method applies the pareto scaling method to each
@@ -117,7 +118,7 @@ Scaling
    .. math::
 
 
-       \frac{x}{\sqrt{\text{std}(x)}}
+       std(x)x
        
 
 Transforming
